@@ -1,0 +1,134 @@
+---
+title: "shiny"
+author: "Daniel Mule"
+date: "3/15/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+
+
+---
+title: "Shiny app"
+author: "Daniel mule"
+date: '2022-03-15'
+output:
+  html_document: default
+  pdf_document: default
+---
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+
+```
+Dashboards are often a great way to share results from analyses with others. Producing a dashboard with shiny requires a relatively advanced knowledge of the R language. Shiny is an R package that makes it easy to build interactive web applications (apps) straight from R. The user interface ui object controls the layout and appearance of your app. The server function contains the instructions that your computer needs to build your app. Finally, the shinyApp function creates Shiny app objects from an explicit UI/server pair.
+Ist step Preparation
+Load packages and libraries which I will use to build my R shiny-app
+library(shiny),library(dplyr),library(DT),library(ggplot2),library(shinydashboard) and library(plotly)
+
+library(shiny)
+I begin by installing all the packages that I will use in my app preparation begin by installing the shiny R package:
+Second step Import data
+After loading the required packages, I now load my data to the app
+Third step:
+I made a brand-new directory before we start. This can actually be made easier by choosing new project in Rstudio, and choosing Shiny Web Application. This will create the basic structure of a shiny app 
+When opening this project, there is app.R file already present called app.R. It is essential that we have one of two basic file structures:
+1.	One file called app. R, or
+2.	Two files, one called ui. R and the other server. R
+
+If you open this file, two objects are defined - one called ui and another called server. These objects must be defined in every shiny app and are central to the structure of the app itself! In fact, the only difference between the two file structures described above is that in structure 1(app. R ) both ui and server are defined in one file, whereas in structure 2 they are defined in separate files. 
+The server and the ui
+Server and ui objects are two objects that interact with each other whenever the user interacts with the shiny app.
+The UI element of a shiny app is, on a basic level, R code that creates an HTML interface. This means everything that is displayed in the UI of an app. This generally includes:
+Widgets, plots, tables, Navigation aspects of an app and generic texts
+UI receives inputs from the user and displays outputs from the server. There is no active code running in the ui at any time - all changes seen in the UI are passed through the server. So, we have to make our plots in the server
+The server of the shiny app is where all code is being run once the app starts up. The server function will effectively react to the user interfacing with the UI, and run chunks of code in response. If things change in the server, these will be passed back up to the ui, where the changes can be seen. When ui input affects a chunk of code in the server, it will run automatically, and that output will be produced and displayed.
+Building a UI
+When building my app, I chose easier to work on the UI first so i can see what im making, and not risk the app failing because of any server errors. 
+A shiny UI is generally defined as a series of nested functions, in the following order
+1.	A function defining the general layout (the most basic is fluidPage(), but more are available)
+2.	Panels within the layout such as:
+	a sidebar (sidebarPanel())
+	a “main” panel (mainPanel())
+	a tab (tabPanel())
+	a generic “column” (column())
+3.	Widgets and outputs - these can confer inputs to the server (widgets) or outputs from the server (outputs)
+	Widgets generally are styled as xxxInput() e.g. selectInput()
+	Outputs are generally styled as xxxOutput() e.g. plotOutput()
+
+
+
+
+how my widgets work 
+Each widget is accepting an inputId, a label, and a series of other options that are specific to the widget type. This inputId is extremely important - these are the IDs that are used to pass information from the UI to the server. For this reason, they must be unique. 
+Widgets will pass specific types of data to the server depending on the widget type, and this needs to be fully understood. For example, selectInput() will pass a character type to the server:
+	If we select Spring for the first widget here, it will pass the character object "Spring" to the server.
+	If we select two items from the dropdown menu, they will come through as a character vector (e.g. c("Affectionate With Family ")).
+Other widgets will pass different types of object to the server! For example:
+	numericInput() will pass a numeric type object to the server
+	checkboxInput() will pass a logical type object to the server (TRUE or FALSE)
+ Loading data into our app
+The next step in our app development is getting the server up and running. To do this however, I need to get some data into our app, and figure out all the calculations im going to do. A shiny app is not straightforward to debug, as it’s often not clear where errors are coming from, so it’s ideal to get all our data processing and visualization code working before i start making the server itself.
+So given i want to make an app that shows epi curves that change based on user input, I should think about what code I would need to run this in a normal R script. i’ll need to:
+1.	Load our packages
+2.	Load our data
+3.	Transform our data
+4.	Develop a function to visualise our data based on user inputs
+After loading the data, I can run the following R code to develop my R shiny app.
+For functional programming with shiny, every relevant parameter will generally have a widget associated with it, so thinking about this is usually quite easy! For example, in my app, i want to be able to filter by breed trait, rank and description, and have a widget for this, so I can add a breed parameter to reflect this. Let’s start by making a function with three parameters:
+1.	The dataset
+2.	The breed
+3.	The trait, description and rank
+
+With my function working, i now have to understand how this all is going to fit into my shiny app. I will put R code in my app. R file at the start of the script (above the UI).
+A great feature of shiny is that it will understand what files named app. R, server. R and  ui.R so there is no need to connect them to each other via any code. 
+Developing an app server
+This is the final piece of my app. The server is a large R function with series of smaller functions, or tasks that the app can perform. These functions are not executed in a linear order. There is an order to them. At a very basic level, these tasks or functions will activate when there is a change in user inputs that affects them.
+From mycode UI has:
+	Two inputs:
+	selector (with an inputId of select_trait)
+	selector (with an inputId of select_description)
+	selector (with an inputId of rank)
+
+	One output:
+	The epicurve (with an outputId of dog breed _epicurve)
+These unique names assigned to our inputs and outputs are crucial. They must be unique and are used to pass information between the ui and server. In my server, I access my inputs via the syntax input$inputID and outputs and passed to the ui through the syntax output$output_name
+
+The server is just a function with three parameters - input, output, and session In my server I have only have one task - this renders a plot based on our function I made earlier, and the inputs from the server. 
+To understand the basics of how the server reacts to user inputs, should note that the output will know when inputs change, and rerun this function to create a plot every time they change. Note that I used the renderPlot() function here it’s a class-specific functions that pass those objects to a ui output. There are a number of functions that behave similarly, but you need to ensure the function used matches the class of object you’re passing to the ui! For example:
+	renderText() - send text to the ui
+	renderDataTable - send an interactive table to the ui.
+There is need to match the output function used in the ui - so renderPlot() is paired with plotOutput(), and renderText() is matched with textOutput().
+Now I have finally made a functioning app.I can run this by pressing the Run App button on the top right of the script window in Rstudio. 
+Adding more functionality
+At this point I have finally got a running app, but we have very little functionality. I also haven’t really scratched the surface of what shiny can do, so I continue to build my existing app by adding some extra features. Some things that could be nice to add could be:
+1.	Some explanatory text
+2.	A download button for our plot - this would provide the user with a high-quality version of the image that they’re generating in the app
+3.	A selector for specific facilities
+4.	Another dashboard page - this could show a table of our data.
+This is a lot to add, but we can use it to learn about a bunch of different shiny featues on the way. 
+
